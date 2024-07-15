@@ -5,10 +5,11 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 
+
 /**
  * UserForm is the model behind the contact form.
  */
-class UserForm extends Model
+class SignupForm extends Model
 {
     public $name;
     public $email;
@@ -28,6 +29,15 @@ class UserForm extends Model
             ['email', 'email'],
             ['password', 'match', 'pattern' => '/^[a-zA-Z0-9@%&*]{8,}$/', 'message' => 'Mật khẩu phải chứa ít nhất 8 ký tự và không chứa ký tự đặc biệt.'],
             ['confirm_password', 'compare', 'compareAttribute' => 'password', 'message' => 'Mật khẩu không khớp.'],
+            [
+                'email', 'unique',
+                'targetClass' => 'app\models\User',
+                'targetAttribute' => ['email'],
+                'filter' => function ($query) {
+                    $query->andWhere(['is_deleted' => false]);
+                },
+                'message' => Yii::t('app', 'Email này đã được sử dụng'),
+            ],
         ];
     }
 
@@ -41,7 +51,6 @@ class UserForm extends Model
             'email' => 'Email',
             'password' => 'Mật khẩu',
             'confirm_password' => 'Xác nhận mật khẩu',
-            'verifyCode' => 'Mã xác nhận',
         ];
     }
 }

@@ -4,14 +4,6 @@ namespace app\models;
 
 use Yii;
 
-/**
- * This is the model class for table "user".
- *
- * @property int $id
- * @property string $name
- * @property string $email
- * @property string $password
- */
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
 
@@ -35,6 +27,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             [['authKey', 'accessToken'], 'string', 'max' => 32],
             [['status'], 'integer'],
             [['status'], 'default', 'value' => 10],
+            [['is_deleted'], 'boolean'],
+            [['is_deleted'], 'default', 'value' => false],
         ];
     }
 
@@ -59,7 +53,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public static function findByEmail($email)
     {
-        if (($model = User::findOne(['email' => $email])) !== null) {
+        if (($model = User::findOne(['email' => $email, 'is_deleted' => false])) !== null) {
             return $model;
         }
         return null;

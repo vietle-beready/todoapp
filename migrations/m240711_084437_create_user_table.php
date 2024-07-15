@@ -20,8 +20,7 @@ class m240711_084437_create_user_table extends Migration
             'authKey' => $this->string(32),
             'accessToken' => $this->string()->unique(),
             'status' => $this->smallInteger()->notNull()->defaultValue(10),
-            // 'created_at' => $this->integer()->notNull(),
-            // 'updated_at' => $this->integer()->notNull(),
+            'is_deleted' => $this->boolean()->notNull()->defaultValue(false),
         ]);
 
 

@@ -17,8 +17,8 @@ use yii\captcha\Captcha; // Add this line to import the Captcha class
         'fieldConfig' => [
             'template' => "{label}\n{input}\n{error}",
             'labelOptions' => ['class' => 'mb-1 font-semibold'],
-            'inputOptions' => ['class' => 'mb-3 col-lg-3 form-control'],
-            'errorOptions' => ['class' => 'block col-lg-7 invalid-feedback'],
+            'inputOptions' => ['class' => 'mb-1 col-lg-3 form-control'],
+            'errorOptions' => ['class' => 'block invalid-feedback mb-2'],
         ],
     ]); ?>
 

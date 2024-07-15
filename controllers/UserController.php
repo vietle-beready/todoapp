@@ -4,7 +4,8 @@ namespace app\controllers;
 
 use Yii;
 use app\models\User;
-use app\models\UserForm;
+use app\models\SignupForm;
+use app\models\UpdateUserForm;
 use app\models\UserSearch;
 use app\models\LoginForm; // Add this line
 use yii\web\Controller;
@@ -100,7 +101,7 @@ class UserController extends Controller
      */
     public function actionCreate()
     {
-        $model_user_form = new UserForm();
+        $model_user_form = new SignupForm();
         $model_user = new User();
         if ($this->request->isPost) {
             $model_user_form->load($this->request->post());
@@ -130,18 +131,40 @@ class UserController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
+    // public function actionUpdate($id)
+    // {
+    //     $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+    //     if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+    //         return $this->redirect(['view', 'id' => $model->id]);
+    //     }
+
+    //     return $this->render('update', [
+    //         'model' => $model,
+    //     ]);
+    // }
+
+
+    public function actionUpdate()
+    {
+        $user = User::findOne(Yii::$app->user->identity->id);
+        $model = new UpdateUserForm();
+        $model->attributes = $user->attributes;
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->updateProfile($user)) {
+                Yii::$app->session->setFlash('updateUserSuccess', 'Profile updated successfully.');
+                return $this->redirect(['update']);
+            } else {
+                Yii::$app->session->setFlash('updateUserError', 'Failed to update profile.');
+            }
         }
 
         return $this->render('update', [
             'model' => $model,
         ]);
     }
+
 
     /**
      * Deletes an existing User model.
@@ -152,8 +175,9 @@ class UserController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        // $this->findModel($id)->delete();
 
+        $this->findModel($id)->updateAttributes(['is_deleted' => true]);
         return $this->redirect(['index']);
     }
 
@@ -172,8 +196,6 @@ class UserController extends Controller
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             $user = Yii::$app->user->identity;
-            // $user->accessToken = Yii::$app->security->generateRandomString();
-            // $user->save();
             return $this->redirect(['view', 'id' => $user->id]);
             return $this->goBack();
         }

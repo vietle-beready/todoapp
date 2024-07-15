@@ -44,11 +44,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         echo Nav::widget([
             'options' => ['class' => 'navbar-nav'],
             'items' => [
-                ['label' => 'Trang chủ', 'url' => ['/site/index']],
+                ['label' => 'Trang chủ', 'url' => ['/']],
                 // ['label' => 'About', 'url' => ['/site/about']],
-                // ['label' => 'Contact', 'url' => ['/site/contact']],
+                ['label' => 'Tải ảnh', 'url' => ['/upload']],
                 Yii::$app->user->isGuest
-                    ? ['label' => 'Đăng nhập', 'url' => ['/user/login']]
+                    ? ['label' => 'Đăng nhập', 'url' => ['/login']]
                     : '<li class="nav-item">'
                     . Html::beginForm(['/user/logout'])
                     . Html::submitButton(
