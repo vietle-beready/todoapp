@@ -7,6 +7,7 @@
 
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
+use yii\captcha\Captcha;
 
 $this->title = 'Đăng nhập';
 $this->params['breadcrumbs'][] = $this->title;
@@ -30,6 +31,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
 
             <?= $form->field($model, 'password')->passwordInput()->label('Mật khẩu') ?>
+
+            <?= $form->field($model, 'verifyCode')->widget(Captcha::class, [
+                'template' => '<div class="row"><div class="col-lg-4">{image}</div><div class="col-lg-8">{input}</div></div>',
+            ]) ?>
 
             <?= $form->field($model, 'rememberMe')->checkbox([
                 'template' => "<div class=\"custom-control custom-checkbox\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",

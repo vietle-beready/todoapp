@@ -16,6 +16,7 @@ class LoginForm extends Model
     public $email;
     public $password;
     public $rememberMe = true;
+    public $verifyCode;
 
     private $_user = false;
 
@@ -32,6 +33,7 @@ class LoginForm extends Model
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword', 'message' => 'Email hoặc mật khẩu không đúng.'],
+            ['verifyCode', 'captcha', 'message' => 'Mã xác nhận không đúng.']
         ];
     }
 
