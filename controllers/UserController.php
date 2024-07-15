@@ -8,6 +8,7 @@ use app\models\SignupForm;
 use app\models\UpdateUserForm;
 use app\models\UserSearch;
 use app\models\LoginForm; // Add this line
+use app\widgets\Alert;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -175,9 +176,8 @@ class UserController extends Controller
      */
     public function actionDelete($id)
     {
-        // $this->findModel($id)->delete();
-
         $this->findModel($id)->updateAttributes(['is_deleted' => true]);
+        $this->actionLogout();
         return $this->redirect(['index']);
     }
 
