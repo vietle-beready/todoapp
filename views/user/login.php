@@ -8,33 +8,32 @@
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
-$this->title = 'Login';
+$this->title = 'Đăng nhập';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>Please fill out the following fields to login:</p>
+<div class="flex justify-center items-center">
+    <div class="w-2/5 mt-5 mb-10">
+        <div class="site-login border-[1px] border-slate-300 p-5 rounded-lg">
 
-    <div class="row">
-        <div class="col-lg-5">
-
+            <div class="text-2xl text-center font-semibold mb-10"><?= Html::encode($this->title) ?></div>
             <?php $form = ActiveForm::begin([
                 'id' => 'login-form',
                 'fieldConfig' => [
                     'template' => "{label}\n{input}\n{error}",
-                    'labelOptions' => ['class' => 'col-lg-1 col-form-label mr-lg-3'],
-                    'inputOptions' => ['class' => 'col-lg-3 form-control'],
-                    'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
+                    'labelOptions' => ['class' => 'mb-1 font-semibold'],
+                    'inputOptions' => ['class' => 'mb-3 col-lg-3 form-control'],
+                    'errorOptions' => ['class' => 'block col-lg-7 invalid-feedback'],
                 ],
             ]); ?>
 
             <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
 
-            <?= $form->field($model, 'password')->passwordInput() ?>
+            <?= $form->field($model, 'password')->passwordInput()->label('Mật khẩu') ?>
 
             <?= $form->field($model, 'rememberMe')->checkbox([
                 'template' => "<div class=\"custom-control custom-checkbox\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
+                'label' => 'Ghi nhớ tôi',
             ]) ?>
 
             <div class="form-group">
@@ -43,13 +42,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
 
-            <?php ActiveForm::end(); ?>
-
-            <div style="color:#999;">
-                You may login with <strong>admin/admin</strong> or <strong>demo/demo</strong>.<br>
-                To modify the username/password, please check out the code <code>app\models\User::$users</code>.
-            </div>
-
         </div>
     </div>
 </div>
+
+
+<?php ActiveForm::end(); ?>

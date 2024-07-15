@@ -26,15 +26,16 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <head>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+    <!-- <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script> -->
+    <!-- <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script> -->
 </head>
 
 <body class="d-flex flex-column h-100">
     <?php $this->beginBody() ?>
 
-    <!-- <header id="header">
+    <header id="header">
         <?php
+        $user = Yii::$app->user->identity;
         NavBar::begin([
             'brandLabel' => Yii::$app->name,
             'brandUrl' => Yii::$app->homeUrl,
@@ -43,27 +44,29 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         echo Nav::widget([
             'options' => ['class' => 'navbar-nav'],
             'items' => [
-                ['label' => 'Home', 'url' => ['/site/index']],
-                ['label' => 'About', 'url' => ['/site/about']],
-                ['label' => 'Contact', 'url' => ['/site/contact']],
+                ['label' => 'Trang chủ', 'url' => ['/site/index']],
+                // ['label' => 'About', 'url' => ['/site/about']],
+                // ['label' => 'Contact', 'url' => ['/site/contact']],
                 Yii::$app->user->isGuest
-                    ? ['label' => 'Login', 'url' => ['/site/login']]
+                    ? ['label' => 'Đăng nhập', 'url' => ['/user/login']]
                     : '<li class="nav-item">'
-                    . Html::beginForm(['/site/logout'])
+                    . Html::beginForm(['/user/logout'])
                     . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->username . ')',
+                        'Đăng xuất (' . Yii::$app->user->identity->name . ')',
                         ['class' => 'nav-link btn btn-link logout']
                     )
                     . Html::endForm()
-                    . '</li>'
+                    . '</li>',
+                ['label' => 'Đăng ký', 'url' => ['/signup']],
             ]
         ]);
         NavBar::end();
         ?>
-    </header> -->
+
+    </header>
 
     <main id="main" class="flex-shrink-0" role="main">
-        <div class="container">
+        <div class="container py-20">
             <?= $content ?>
         </div>
     </main>

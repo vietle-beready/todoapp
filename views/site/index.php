@@ -2,13 +2,12 @@
 
 /** @var yii\web\View $this */
 
-$this->title = 'My Yii Application';
+$this->title = 'Todo List';
 ?>
 <div class="site-index">
     <div class="flex justify-center items-center p-5">
         <div x-data="{
-        tasks: $persist([
-        ]),
+        tasks: [],
         addTask() {
             this.tasks.push({ id: Date.now(), title: this.newTask, completed: false });
             this.newTask = '';
@@ -96,3 +95,32 @@ $this->title = 'My Yii Application';
         </div>
     </div>
 </div>
+
+<div @foo="console.log('foo was dispatched')">
+    <button @click="$dispatch('foo')">hello</button>
+</div>
+
+<div x-data="{ open: false }">
+    <button @click="open = !open">Toggle</button>
+    <div x-show="open">Content</div>
+</div>
+
+<div x-data="dropdown">
+    <button @click="toggle">Toggle Content</button>
+
+    <div x-show="open">
+        Content...
+    </div>
+</div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('dropdown', () => ({
+            open: false,
+
+            toggle() {
+                this.open = !this.open
+            },
+        }))
+    })
+</script>
