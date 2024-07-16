@@ -50,6 +50,8 @@ $config = [
                 'signup' => 'user/create',
                 'login' => 'user/login',
                 '' => 'site/index',
+                'upload' => 'site/upload',
+                'gallery' => 'gallery/index',
             ],
         ],
     ],

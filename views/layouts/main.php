@@ -46,9 +46,9 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             'items' => [
                 ['label' => 'Trang chủ', 'url' => ['/']],
                 // ['label' => 'About', 'url' => ['/site/about']],
-                ['label' => 'Tải ảnh', 'url' => ['/upload']],
+                ['label' => 'Bộ sưu tập', 'url' => ['/gallery']],
                 Yii::$app->user->isGuest
-                    ? ['label' => 'Đăng nhập', 'url' => ['/login']]
+                    ? array_merge(['label' => 'Đăng nhập', 'url' => ['/login']],   ['label' => 'Đăng ký', 'url' => ['/signup']])
                     : '<li class="nav-item">'
                     . Html::beginForm(['/user/logout'])
                     . Html::submitButton(
@@ -57,7 +57,6 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                     )
                     . Html::endForm()
                     . '</li>',
-                ['label' => 'Đăng ký', 'url' => ['/signup']],
             ]
         ]);
         NavBar::end();

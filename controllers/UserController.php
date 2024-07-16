@@ -8,7 +8,6 @@ use app\models\SignupForm;
 use app\models\UpdateUserForm;
 use app\models\UserSearch;
 use app\models\LoginForm; // Add this line
-use app\widgets\Alert;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -53,16 +52,6 @@ class UserController extends Controller
                 ],
 
             ],
-            // $behaviors['contentNegotiator'] = [
-            //     'class' => \yii\filters\ContentNegotiator::class,
-            //     'formats' => [
-            //         'application/json' => Response::FORMAT_JSON,
-            //     ],
-            // ],
-            // $behaviors['authenticator'] = [
-            //     'class' => HttpBearerAuth::class,
-            // ]
-
         );
     }
 
