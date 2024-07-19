@@ -26,20 +26,10 @@ $this->title = 'Todo List';
                 { id: <?= $task->id ?>, title: '<?= $task->description ?>', completed: <?= $task->status ?> },
             <?php endforeach; ?>    
         ],
-        addTask() {
-            this.tasks.push({ id: Date.now(), title: this.newTask, completed: false });
-            this.newTask = '';
-        },
-        removeTask(index) {
-            this.tasks.splice(index, 1);
-        },             
         
-        get toggleTask() {
-
-        },
         get totalTask() {
             return this.tasks.length
-        },   
+        },
         get totalCompletedTask() {
             return this.tasks.filter(task => task.completed).length;
         },
@@ -47,7 +37,7 @@ $this->title = 'Todo List';
             return this.tasks.filter(task => !task.completed).length
         },
         get isComplete() {
-            return this.tasks.filter(task => !task.completed).length
+            return this.tasks.filter(task => !task.completed).length 
         },
         isFilter(isComplete) {
             if(this.filter==='all') return true
@@ -69,7 +59,7 @@ $this->title = 'Todo List';
                 </div>
                 <div class="flex justify-between items-center gap-10">
                     <?php $form = ActiveForm::begin([
-                        'action' => ['task/search'],
+                        'action' => ['search'],
                         'method' => 'get',
                         'options' => ['class' => 'flex justify-center items-center gap-3']
                     ]); ?>
@@ -78,7 +68,6 @@ $this->title = 'Todo List';
                     <?php ActiveForm::end(); ?>
 
                     <form class="">
-                        <!-- <label for="small" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Small select</label> -->
                         <select id="small" @change="console.log(filter)" x-model="filter" class="block p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option selected value="all">Tất cả </option>
                             <option value="complete">Hoàn thành</option>
@@ -104,18 +93,23 @@ $this->title = 'Todo List';
                 <?php foreach ($tasks as $task) : ?>
                     <li class="rounded-md p-3 border-[1px] border-gray-300 flex justify-between" x-show="isFilter( <?= $task['status'] ?>)" :class="{ 'bg-gray-200': <?= $task['status'] ? 'true' : 'false' ?> }">
                         <div class="flex justify-center items-center gap-3">
-                            <?= Html::beginForm(['task/update-status', 'id' => $task->id], 'post') ?>
+                            <?= Html::beginForm(['update-status', 'id' => $task->id], 'post') ?>
                             <?= Html::checkbox('status', $task->status, ['onchange' => 'this.form.submit()', 'class' => 'w-4 h-4']) ?>
                             <?= Html::endForm() ?>
-                            <!-- <input type="checkbox" class="w-4 h-4" @change="updateTask($event, <?= $task['id'] ?>)"> -->
+
                             <div class="font-semibold">
                                 <?= $task['description'] ?>
                             </div>
                         </div>
                         <div>
-                            <?= Html::beginForm(['task/delete', 'id' => $task->id], 'post', ['class' => 'text-slate-500 text-sm']) ?>
-                            <?= Html::submitButton('Remove', ['class' => 'text-slate-500 text-sm']) ?>
-                            <?= Html::endForm() ?>
+
+                            <?= Html::a('Remove', ['delete', 'id' => $task->id], [
+                                'class' => 'text-slate-500 text-sm',
+                                'data' => [
+                                    'confirm' => 'Are you sure you want to delete this item?',
+                                    'method' => 'post',
+                                ],
+                            ]) ?>
                             <!-- <button class="text-slate-500 text-sm">Remove</button> -->
                         </div>
                     </li>

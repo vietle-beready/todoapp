@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use app\models\UploadForm;
+use \yii\web\HttpException;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -55,10 +56,10 @@ class GalleryController extends Controller
             $refererHost = parse_url($referer, PHP_URL_HOST);
 
             if ($refererHost !== $validDomain) {
-                throw new \yii\web\HttpException(403, 'Invalid Domain.');
+                throw new HttpException(403, 'Invalid Domain.');
             }
         } else {
-            throw new \yii\web\HttpException(403, 'No referer header.');
+            throw new HttpException(403, 'No referer header.');
         }
 
         $model = new UploadForm();
@@ -76,7 +77,8 @@ class GalleryController extends Controller
     public function actionIndex()
     {
         $user_name = Yii::$app->user->identity->name;
-        $userImageDirectory = Yii::getAlias("@webroot/$user_name/uploads/webp/");
+        $safe_user_name = preg_replace('/[^a-zA-Z0-9_-]/', '_', $user_name); // Thay thế ký tự không hợp lệ
+        $userImageDirectory = Yii::getAlias("@webroot/$safe_user_name/uploads/webp/");
 
         $webpImages = [];
         if (!is_dir($userImageDirectory)) {
@@ -91,7 +93,7 @@ class GalleryController extends Controller
                 if (is_file($filePath) && pathinfo($file, PATHINFO_EXTENSION) === 'webp') {
                     $webpImages[] = [
                         'name' => $file,
-                        'url' => "@web/$user_name/uploads/webp/" . $file,
+                        'url' => "@web/$safe_user_name/uploads/webp/" . $file,
                     ];
                 }
             }

@@ -8,6 +8,7 @@ use app\models\TaskSearch;
 use app\models\TaskForm;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use \yii\web\HttpException;
 
 class TaskController extends \yii\web\Controller
 {
@@ -42,8 +43,10 @@ class TaskController extends \yii\web\Controller
     }
     public function actionIndex()
     {
+        $user = Yii::$app->user->identity;
+        $query = Task::find()->where(['is_deleted' => false, 'id_user' => $user->id])->all();
         return $this->render('index', [
-            'tasks' => Task::find()->where(['is_deleted' => false])->all(),
+            'tasks' => $query,
             'model' => new TaskForm(),
             'model_search' => new TaskSearch(),
         ]);
@@ -74,21 +77,27 @@ class TaskController extends \yii\web\Controller
 
     public function actionUpdateStatus($id)
     {
-        if ($this->request->isPost) {
-            $task = Task::findOne($id);
-            $task->status = $this->request->post('status');
-            if ($task->save()) {
-                return $this->redirect(['index']);
+        $task = Task::findOne($id);
+        if ($this->validatePermission($task->id_user)) {
+            if ($this->request->isPost) {
+                $task->status = $this->request->post('status');
+                if ($task->save()) {
+                    return $this->redirect(['index']);
+                }
             }
+            return $this->redirect(['index']);
         }
-        return $this->redirect(['index']);
     }
 
     public function actionDelete($id)
     {
         $task = Task::findOne($id);
-        $task->is_deleted = 1;
-        if ($task->save()) {
+
+        if ($this->validatePermission($task->id_user)) {
+            $task->is_deleted = 1;
+            if ($task->save()) {
+                return $this->redirect(['index']);
+            }
             return $this->redirect(['index']);
         }
     }
@@ -96,12 +105,22 @@ class TaskController extends \yii\web\Controller
     public function actionSearch()
     {
         $model_search = new TaskSearch();
+        $description = Yii::$app->request->get('description');
         $dataProvider = $model_search->search(Yii::$app->request->queryParams);
-        // return $this->asJson(['error' => $dataProvider]);
+
         return $this->render('index', [
             'tasks' => $dataProvider->getModels(),
             'model' => new TaskForm(),
             'model_search' => $model_search,
         ]);
+    }
+
+    public function validatePermission($id_user)
+    {
+        if ($id_user !== Yii::$app->user->id) {
+            throw new \yii\web\HttpException(403, 'You do not have permission to perform this action');
+        } else {
+            return true;
+        }
     }
 }

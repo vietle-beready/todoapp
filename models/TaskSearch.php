@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Task;
@@ -56,18 +57,12 @@ class TaskSearch extends Task
             return $dataProvider;
         }
 
-        // grid filtering conditions
-        // $query->andFilterWhere([
-        //     'id' => $this->id,
-        //     'id_user' => $this->id_user,
-        //     'status' => $this->status,
-        //     'is_deleted' => $this->is_deleted,
-        // ]);
-
         $query->andFilterWhere([
             'like', 'description', $this->description
         ])->andFilterWhere([
             'is_deleted' => false
+        ])->andFilterWhere([
+            'id_user' => Yii::$app->user->identity->id
         ]);
 
         return $dataProvider;

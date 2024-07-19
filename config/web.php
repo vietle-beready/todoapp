@@ -51,6 +51,7 @@ $config = [
                 'login' => 'user/login',
                 '' => 'task/index',
                 'gallery' => 'gallery/index',
+
             ],
         ],
     ],
