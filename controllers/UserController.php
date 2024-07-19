@@ -12,7 +12,6 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
-use yii\filters\auth\HttpBearerAuth;
 use yii\filters\AccessControl;
 
 /**
@@ -106,9 +105,6 @@ class UserController extends Controller
                 }
             }
         }
-        // else {
-        //     $model_user_form->loadDefaultValues();
-        // }
         return $this->render('create', [
             'model' => $model_user_form,
         ]);

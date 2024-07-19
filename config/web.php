@@ -49,8 +49,7 @@ $config = [
             'rules' => [
                 'signup' => 'user/create',
                 'login' => 'user/login',
-                '' => 'site/index',
-                'upload' => 'site/upload',
+                '' => 'task/index',
                 'gallery' => 'gallery/index',
             ],
         ],
