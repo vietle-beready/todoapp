@@ -28,9 +28,14 @@ class UploadForm extends Model
 
         if ($this->validate()) {
             $user_name = Yii::$app->user->identity->name;
-            $path = Yii::getAlias("@webroot/$user_name/uploads/");
+            $safe_user_name = preg_replace('/[^a-zA-Z0-9_-]/', '_', $user_name); // Thay thế ký tự không hợp lệ
+            $path = Yii::getAlias("@webroot/$safe_user_name/uploads/");
+
+            // Kiểm tra và tạo thư mục
             if (!is_dir($path)) {
-                mkdir($path, 0777, true);
+                if (!mkdir($path, 0777, true)) {
+                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $path));
+                }
             }
             foreach ($this->imageFiles as $file) {
                 $fileName = Yii::$app->security->generateRandomString(16) . '.' . $file->extension;

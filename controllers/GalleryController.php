@@ -47,16 +47,21 @@ class GalleryController extends Controller
     public function actionUpload()
     {
         // Chỉ định domain hợp lệ
-        $validDomain = 'todoapp.com';
+        $validDomain = $_ENV['VALID_DOMAIN'];
 
         $referer = Yii::$app->request->headers->get('referer');
 
-        if ($referer && parse_url($referer, PHP_URL_HOST) !== $validDomain) {
-            return $this->asJson(['error' => 'Invalid domain .']);
+        if ($referer) {
+            $refererHost = parse_url($referer, PHP_URL_HOST);
+
+            if ($refererHost !== $validDomain) {
+                throw new \yii\web\HttpException(403, 'Invalid Domain.');
+            }
+        } else {
+            throw new \yii\web\HttpException(403, 'No referer header.');
         }
 
         $model = new UploadForm();
-
         if (Yii::$app->request->isPost) {
             $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
             if ($model->upload()) {

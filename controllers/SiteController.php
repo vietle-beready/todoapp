@@ -9,6 +9,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use yii\web\HttpException;
 
 
 class SiteController extends Controller
@@ -108,5 +109,16 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+
+    public function actionError()
+    {
+        $exception = Yii::$app->errorHandler->exception;
+
+        if ($exception !== null) {
+            $code = $exception instanceof HttpException ? $exception->statusCode : 500;
+            return $this->render('error', ['exception' => $exception, 'code' => $code]);
+        }
     }
 }
