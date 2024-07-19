@@ -9,6 +9,7 @@ use app\models\TaskForm;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use \yii\web\HttpException;
+use yii\helpers\Json;
 
 class TaskController extends \yii\web\Controller
 {
@@ -30,7 +31,7 @@ class TaskController extends \yii\web\Controller
                     'class' => AccessControl::class,
                     'rules' => [
                         [
-                            'actions' => ['index', 'create', 'update-status', 'delete', 'search'],
+                            'actions' => ['index', 'create', 'update-status', 'delete', 'search', 'filter'],
                             'allow' => true,
                             'roles' => ['@'],
                         ],
@@ -67,7 +68,6 @@ class TaskController extends \yii\web\Controller
                 if ($task->save()) {
                     Yii::$app->session->setFlash('taskSuccess', 'Thêm nhiệm vụ thành công.');
                 } else {
-                    // return $this->asJson(['task' => $task, 'error' => $task->errors]);
                     Yii::$app->session->setFlash('taskError', 'Có lỗi xảy ra khi lưu dữ liệu.');
                 }
             }
@@ -82,7 +82,9 @@ class TaskController extends \yii\web\Controller
             if ($this->request->isPost) {
                 $task->status = $this->request->post('status');
                 if ($task->save()) {
-                    return $this->redirect(['index']);
+                    Yii::$app->session->setFlash('taskSuccess', 'Cập nhập nhiệm vụ thành công.');
+                } else {
+                    Yii::$app->session->setFlash('taskError', 'Có lỗi xảy ra khi lưu dữ liệu.');
                 }
             }
             return $this->redirect(['index']);
@@ -96,7 +98,9 @@ class TaskController extends \yii\web\Controller
         if ($this->validatePermission($task->id_user)) {
             $task->is_deleted = 1;
             if ($task->save()) {
-                return $this->redirect(['index']);
+                Yii::$app->session->setFlash('taskSuccess', 'Xóa nhiệm vụ thành công.');
+            } else {
+                Yii::$app->session->setFlash('taskError', 'Có lỗi xảy ra khi lưu dữ liệu.');
             }
             return $this->redirect(['index']);
         }
@@ -105,13 +109,31 @@ class TaskController extends \yii\web\Controller
     public function actionSearch()
     {
         $model_search = new TaskSearch();
-        $description = Yii::$app->request->get('description');
+        // $description = Yii::$app->request->get('description');
+        // $dataProvider = $model_search->search(['description' => $description]);
         $dataProvider = $model_search->search(Yii::$app->request->queryParams);
+        $tasks = $dataProvider ? $dataProvider->getModels() : [];
 
         return $this->render('index', [
-            'tasks' => $dataProvider->getModels(),
+            'tasks' => $tasks,
             'model' => new TaskForm(),
             'model_search' => $model_search,
+        ]);
+    }
+
+    public function actionFilter()
+    {
+        $model_search = new TaskSearch();
+        $dataProvider = $model_search->filter(Yii::$app->request->queryParams);
+        $tasks = $dataProvider ? $dataProvider->getModels() : [];
+
+        $filter = Yii::$app->request->queryParams['TaskSearch']['filter'];
+
+
+        return $this->render('index', [
+            'tasks' => $tasks,
+            'model' => new TaskForm(),
+            'model_search' => new TaskSearch(['filter' => $filter]),
         ]);
     }
 

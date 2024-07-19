@@ -2,24 +2,27 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm; // Add this line
-use yii\httpclient\Client;
+use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 
 $this->title = 'Todo List';
 ?>
 <div class="site-index">
-    <?php if (Yii::$app->session->hasFlash('taskSuccess')) : ?>
-        <div class="alert alert-success">
-            <?= Yii::$app->session->getFlash('taskSuccess') ?>
-        </div>
-    <?php elseif (Yii::$app->session->hasFlash('taskError')) : ?>
-        <div class="alert alert-error">
-            <?= Yii::$app->session->getFlash('taskError') ?>
-        </div>
-    <?php endif; ?>
 
-    <div class="flex justify-center items-center p-5">
+    <div class="px-5">
+        <?php if (Yii::$app->session->hasFlash('taskSuccess')) : ?>
+            <div class="alert alert-success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 1500)" x-show="show">
+                <?= Yii::$app->session->getFlash('taskSuccess') ?>
+            </div>
+        <?php elseif (Yii::$app->session->hasFlash('taskError')) : ?>
+            <div class="alert alert-error" x-data="{ show: true }" x-init="setTimeout(() => show = false, 1500)" x-show="show">
+                <?= Yii::$app->session->getFlash('taskError') ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <div class="flex justify-center items-center p-5 flex-col">
+
         <div x-data="{
         tasks: [
             <?php foreach ($tasks  as $task) : ?>
@@ -63,17 +66,42 @@ $this->title = 'Todo List';
                         'method' => 'get',
                         'options' => ['class' => 'flex justify-center items-center gap-3']
                     ]); ?>
+
                     <?= $form->field($model_search, 'description')->textInput(['class' => 'border-1 border-slate-500 px-2 py-1 rounded-md', 'placeholder' => 'Tìm kiếm...'])->label(false) ?>
                     <?= Html::submitButton('Tìm kiếm', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800']) ?>
+
                     <?php ActiveForm::end(); ?>
 
-                    <form class="">
-                        <select id="small" @change="console.log(filter)" x-model="filter" class="block p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+
+                    <?php $form = ActiveForm::begin([
+                        'action' => ['filter'],
+                        'method' => 'get',
+                        'options' => ['class' => 'flex justify-center items-center gap-3']
+                    ]); ?>
+
+                    <?= $form->field($model_search, 'filter')->dropDownList([
+                        'all' => 'Tất cả',
+                        'complete' => 'Hoàn thành',
+                        'uncomplete' => 'Chưa hoàn thành'
+                    ], [
+                        'class' => 'block p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
+                        'onchange' => 'this.form.submit()',
+                        // 'options' => [
+                        //     $model_search->filter ?  $model_search->filter : 'all' => ['selected' => true]
+                        // ]
+                    ])->label(false) ?>
+
+                    <?php ActiveForm::end(); ?>
+
+
+                    <!-- <form class="">
+                        <select id="small" x-model="filter" class="block p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option selected value="all">Tất cả </option>
                             <option value="complete">Hoàn thành</option>
                             <option value="uncomplete">Chưa hoàn thành</option>
                         </select>
-                    </form>
+                    </form> -->
+
                 </div>
             </div>
             <div class="mt-3 mb-4">
@@ -114,19 +142,6 @@ $this->title = 'Todo List';
                         </div>
                     </li>
                 <?php endforeach; ?>
-                <!-- <template x-for="(task, index) in tasks" :key="index">
-                    <li x-show="isFilter(task.completed)" class="rounded-md p-3 border-[1px] border-gray-300 flex justify-between" :class="{ 'bg-gray-200': task.completed }">
-                        <div class="flex justify-center items-center gap-3">
-                            
-                            <input type="checkbox" @click="toggleTask" :checked="task.completed" class="w-4 h-4" x-model="task.completed">
-                            <div class=" font-semibold" x-text="task.title" :class="{'line-through': task.completed}">
-                            </div>
-                        </div>
-                        <div>
-                            <button @click="removeTask(index)" class="text-slate-500 text-sm">Remove</button>
-                        </div>
-                    </li>
-                </template> -->
             </ul>
 
             <div class="mt-10 shadow-primary rounded-lg p-3">

@@ -10,7 +10,6 @@ class TaskForm extends Model
     public $description;
     public $status;
 
-
     /**
      * @return array the validation rules.
      */
@@ -20,6 +19,7 @@ class TaskForm extends Model
             [['description'], 'required', 'message' => 'Tên nhiệm vụ không thể thiếu.'],
             ['description', 'string', 'max' => 1000],
             ['status', 'integer'],
+
 
         ];
     }
